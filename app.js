@@ -5,9 +5,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
+
+const noteRoutes = require('./routes/noteRoutes'); // New note routes
+const authMiddleware = require('./middleware/authMiddleware');
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+
+// Add this after your middleware setup
+app.use('/notes', noteRoutes);
+
+
+
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -134,6 +145,10 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
+
+
 // Modified Verify Token middleware
 const verifyToken = (req, res, next) => {
   try {
@@ -164,6 +179,10 @@ const verifyToken = (req, res, next) => {
 app.get('/dashboard', verifyToken, (req, res) => {
   res.json({ message: "Welcome to the dashboard", userId: req.user.id });
 });
+
+
+
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;
