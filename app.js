@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
 
+
 const noteRoutes = require('./routes/noteRoutes'); // New note routes
-const authMiddleware = require('./middleware/authMiddleware');
+
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cors());
 
 
 // Add this after your middleware setup
+
 app.use('/notes', noteRoutes);
 
 
