@@ -32,7 +32,12 @@ const NoteSchema = new mongoose.Schema({
   isFavorite: {
     type: Boolean,
     default: false
-  }
+  },
+  images: [{
+    data: String,        // Base64 encoded image data
+    contentType: String, // MIME type of image
+    filename: String     // Original filename
+  }]
 }, {
   timestamps: true
 });
