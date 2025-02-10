@@ -8,6 +8,7 @@ const cors = require('cors');
 
 
 const noteRoutes = require('./routes/noteRoutes'); // New note routes
+const diagramRoutes= require('./routes/diagramRoutes');
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(cors());
 // Add this after your middleware setup
 
 app.use('/notes', noteRoutes);
+app.use('/study',diagramRoutes);
 
 
 
