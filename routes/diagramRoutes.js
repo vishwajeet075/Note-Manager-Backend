@@ -1,7 +1,8 @@
+const axios = require('axios');
 const express = require('express');
 const multer = require('multer');
-const Tesseract = require('tesseract.js');
 const fs = require('fs');
+const FormData = require('form-data');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -12,18 +13,24 @@ router.post('/upload', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const imagePath = req.file.path; // Path to uploaded image
-    console.log("Image received at backend:", imagePath);
+    const imagePath = req.file.path;
 
-    // Perform OCR
-    const { data: { text } } = await Tesseract.recognize(imagePath, 'eng');
+    // Prepare FormData for FastAPI
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(imagePath), { filename: req.file.originalname });
 
-    
+    // Send to FastAPI
+    const fastapiResponse = await axios.post('https://study-section.onrender.com/process-image/', formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+    });
 
-    // Delete the file after processing (optional)
+    // Delete file after processing
     fs.unlinkSync(imagePath);
 
-    res.status(200).json({ extractedText: text });
+    // Send response from FastAPI back to frontend
+    res.json(fastapiResponse.data);
 
   } catch (error) {
     console.error('Error processing image:', error);
